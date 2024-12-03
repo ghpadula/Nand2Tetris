@@ -57,7 +57,7 @@ public class Main extends init {
                     intructionC(line,bw);
 
                 }
-                countline++;
+                
             }
 
             System.out.println("Arquivo copiado com sucesso de " + inputFile + " para " + outputFile);
