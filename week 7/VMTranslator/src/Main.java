@@ -10,7 +10,7 @@ public class Main {
         }
 
         String inputFile = args[0];  // Nome do arquivo de entrada
-        String outputFile = inputFile.replace(".vm", ".asm"); // Nome do arquivo de saída
+        String outputFile = inputFile.replace(".vm", ".asm"); // Nome do arquivo de saíd
 
         try (
                 BufferedReader brLabel = new BufferedReader(new FileReader(inputFile));
