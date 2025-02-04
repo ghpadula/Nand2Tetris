@@ -37,4 +37,11 @@ public class Parser {
                 return C_ARITHMETIC;
         }
     }
+
+    public static String getArg1(String line){
+        return line.split(" ")[1];
+    }
+    public static String getArg2(String line){
+        return line.split(" ")[2];
+    }
 }

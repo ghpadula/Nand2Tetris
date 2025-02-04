@@ -1,4 +1,5 @@
 import java.io.*;
+import java.security.cert.CertPath;
 import java.util.*;
 
 public class Main {
@@ -18,6 +19,7 @@ public class Main {
         ) {
             String line;
             Parser p = new Parser();
+            CodeWriter c = new CodeWriter(bw);
 
             while ((line = brLabel.readLine()) != null) {
                 line = p.lineTreatment(line);
@@ -26,6 +28,28 @@ public class Main {
                 }
                 bw.write("//" + line);
                 bw.newLine();
+                int comand = p.comandType(line);
+                String arg1;
+                String arg2;
+
+                if(comand == p.C_ARITHMETIC){
+                    bw.write("aritimetic");
+                    bw.newLine();
+
+                }
+                else if(comand == p.C_PUSH){
+                    arg1 = p.getArg1(line);
+                    arg2 = p.getArg2(line);
+                    c.pushWriter(arg1,arg2,inputFile);
+
+
+                }
+                else{
+                    bw.write("pop");
+                    bw.newLine();
+
+
+                }
 
             }
 
