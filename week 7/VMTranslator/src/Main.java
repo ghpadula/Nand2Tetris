@@ -19,7 +19,7 @@ public class Main {
         ) {
             String line;
             Parser p = new Parser();
-            CodeWriter c = new CodeWriter(bw);
+            CodeWriter c = new CodeWriter(bw,inputFile);
 
             while ((line = brLabel.readLine()) != null) {
                 line = p.lineTreatment(line);
@@ -40,7 +40,7 @@ public class Main {
                 else if(comand == p.C_PUSH){
                     arg1 = p.getArg1(line);
                     arg2 = p.getArg2(line);
-                    c.pushWriter(arg1,arg2,inputFile);
+                    c.pushWriter(arg1,arg2);
 
 
                 }
