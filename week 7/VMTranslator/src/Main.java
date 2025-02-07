@@ -35,8 +35,7 @@ public class Main {
 
                 if(comand == p.C_ARITHMETIC){
                     ariType = p.ArithmeticType(line);
-                    bw.write("aritimetic");
-                    bw.newLine();
+                    c.arithmeticWriter(ariType);
 
                 }
                 else if(comand == p.C_PUSH){

@@ -55,7 +55,11 @@ M=D
 @SP
 M=M+1
 //add
-aritimetic
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
 //push this 2
 @2
 D=A
@@ -68,7 +72,11 @@ M=D
 @SP
 M=M+1
 //sub
-aritimetic
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D-M
 //push that 6
 @6
 D=A
@@ -81,4 +89,8 @@ M=D
 @SP
 M=M+1
 //add
-aritimetic
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
