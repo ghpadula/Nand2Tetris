@@ -5,7 +5,8 @@ import java.util.*;
 public class CodeWriter {
     private BufferedWriter bw;
     private String fileName;
-    public static Map<String, String> segments = new HashMap<>();
+    private static Map<String, String> segments = new HashMap<>();
+    private int countLabel = 0;
 
 
     public CodeWriter(BufferedWriter bw,String fileName) {
@@ -84,5 +85,131 @@ public class CodeWriter {
                 "M=M+1\n");
 
 
+    }
+
+    public void arithmeticWriter(String type) throws IOException {
+        switch (type){
+            case "eq":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "D=D-M\n" +
+                        "@EQUAL." + countLabel + "\n" +
+                        "D;JEQ" +
+                        "@NOT_EQUAL." + countLabel + "\n" +
+                        "0;JNE\n" +
+                        "(EQUAL." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=-1\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(NOT_EQUAL." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=0\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(END." + countLabel + ")\n");
+                countLabel++;
+                break;
+
+            case "lt":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "D=M-D\n" +
+                        "@LESS_THAN." + countLabel + "\n" +
+                        "D;JGT" +
+                        "@NOT_LESS." + countLabel + "\n" +
+                        "0;JMP\n" +
+                        "(LESS_THAN." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=-1\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(NOT_LESS." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=0\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(END." + countLabel + ")\n");
+                countLabel++;
+                break;
+
+            case "gt":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "D=M-D\n" +
+                        "@GREATER_THAN." + countLabel + "\n" +
+                        "D;JLT" +
+                        "@NOT_GREATER." + countLabel + "\n" +
+                        "0;JMP\n" +
+                        "(GREATER_THAN." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=-1\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(NOT_GREATER." + countLabel + ")\n" +
+                        "@SP\n" +
+                        "A=M-1\n" +
+                        "M=0\n" +
+                        "@END." + countLabel + "\n" +
+                        "0;JMP" +
+                        "(END." + countLabel + ")\n");
+                countLabel++;
+                break;
+
+            case "add":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "M=D+M\n");
+                break;
+
+            case "sub":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "M=D-M\n");
+                break;
+
+            case "neg":
+                bw.write("@SP\n" +
+                        "A=M-1\n" +
+                        "M=-M\n");
+                break;
+
+            case "end":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "M=D&M\n");
+                break;
+
+            case "or":
+                bw.write("@SP\n" +
+                        "AM=M-1\n" +
+                        "D=M\n" +
+                        "A=A-1\n" +
+                        "M=D|M\n");
+                break;
+
+            case "not":
+                bw.write("@SP\n" +
+                        "A=M-1\n" +
+                        "M=!M\n");
+                break;
+        }
     }
 }

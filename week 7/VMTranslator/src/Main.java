@@ -29,10 +29,12 @@ public class Main {
                 bw.write("//" + line);
                 bw.newLine();
                 int comand = p.comandType(line);
+                String ariType;
                 String arg1;
                 String arg2;
 
                 if(comand == p.C_ARITHMETIC){
+                    ariType = p.ArithmeticType(line);
                     bw.write("aritimetic");
                     bw.newLine();
 

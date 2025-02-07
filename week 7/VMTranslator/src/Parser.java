@@ -44,4 +44,7 @@ public class Parser {
     public static String getArg2(String line){
         return line.split(" ")[2];
     }
+    public static String ArithmeticType(String line){
+        return line.split(" ")[0];
+    }
 }
