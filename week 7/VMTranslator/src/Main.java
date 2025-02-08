@@ -46,8 +46,9 @@ public class Main {
 
                 }
                 else{
-                    bw.write("pop");
-                    bw.newLine();
+                    arg1 = p.getArg1(line);
+                    arg2 = p.getArg2(line);
+                    c.popWriter(arg1,arg2);
 
 
                 }

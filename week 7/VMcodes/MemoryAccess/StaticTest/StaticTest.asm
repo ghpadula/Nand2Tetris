@@ -23,11 +23,23 @@ M=D
 @SP
 M=M+1
 //pop static 8
-pop
+@SP
+AM=M-1
+D=M
+@StaticTest.8
+M=D
 //pop static 3
-pop
+@SP
+AM=M-1
+D=M
+@StaticTest.3
+M=D
 //pop static 1
-pop
+@SP
+AM=M-1
+D=M
+@StaticTest.1
+M=D
 //push static 3
 @StaticTest.3
 D=M
@@ -45,7 +57,11 @@ M=D
 @SP
 M=M+1
 //sub
-aritimetic
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
 //push static 8
 @StaticTest.8
 D=M
@@ -55,4 +71,8 @@ M=D
 @SP
 M=M+1
 //add
-aritimetic
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M

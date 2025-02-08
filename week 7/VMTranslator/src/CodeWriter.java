@@ -37,7 +37,7 @@ public class CodeWriter {
             bw.write("@" + arg2 + "\n" +
                     "D=A\n" +
                     "@" + segments.get(arg1) + "\n" + //Example if arg1 = local, will be written @LCL
-                    "A=A+D\n" +
+                    "A=D+M\n" +
                     "D=M\n");
 
         }
@@ -59,7 +59,7 @@ public class CodeWriter {
                     bw.write("@" + arg2 + "\n" +
                             "D=A\n" +
                             "@5\n"  +
-                            "A=A+D\n" +
+                            "A=D+A\n" +
                             "D=M\n");
 
                     break;
@@ -74,7 +74,7 @@ public class CodeWriter {
                         bw.write("@THAT\n" +
                                 "D=M\n");
                     }
-
+                    break;
 
             }
         }
@@ -96,21 +96,21 @@ public class CodeWriter {
                         "A=A-1\n" +
                         "D=D-M\n" +
                         "@EQUAL." + countLabel + "\n" +
-                        "D;JEQ" +
+                        "D;JEQ\n" +
                         "@NOT_EQUAL." + countLabel + "\n" +
-                        "0;JNE\n" +
+                        "D;JNE\n" +
                         "(EQUAL." + countLabel + ")\n" +
                         "@SP\n" +
                         "A=M-1\n" +
                         "M=-1\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
+                        "0;JMP\n" +
                         "(NOT_EQUAL." + countLabel + ")\n" +
                         "@SP\n" +
                         "A=M-1\n" +
                         "M=0\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
+                        "0;JMP\n" +
                         "(END." + countLabel + ")\n");
                 countLabel++;
                 break;
@@ -122,21 +122,21 @@ public class CodeWriter {
                         "A=A-1\n" +
                         "D=M-D\n" +
                         "@LESS_THAN." + countLabel + "\n" +
-                        "D;JGT" +
+                        "D;JGE\n" +
                         "@NOT_LESS." + countLabel + "\n" +
                         "0;JMP\n" +
-                        "(LESS_THAN." + countLabel + ")\n" +
+                        "(NOT_LESS." + countLabel + ")\n" +
                         "@SP\n" +
                         "A=M-1\n" +
                         "M=-1\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
-                        "(NOT_LESS." + countLabel + ")\n" +
+                        "0;JMP\n" +
+                        "(LESS_THAN." + countLabel + ")\n" +
                         "@SP\n" +
                         "A=M-1\n" +
                         "M=0\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
+                        "0;JMP\n" +
                         "(END." + countLabel + ")\n");
                 countLabel++;
                 break;
@@ -148,7 +148,7 @@ public class CodeWriter {
                         "A=A-1\n" +
                         "D=M-D\n" +
                         "@GREATER_THAN." + countLabel + "\n" +
-                        "D;JLT" +
+                        "D;JGT\n" +
                         "@NOT_GREATER." + countLabel + "\n" +
                         "0;JMP\n" +
                         "(GREATER_THAN." + countLabel + ")\n" +
@@ -156,13 +156,13 @@ public class CodeWriter {
                         "A=M-1\n" +
                         "M=-1\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
+                        "0;JMP\n" +
                         "(NOT_GREATER." + countLabel + ")\n" +
                         "@SP\n" +
                         "A=M-1\n" +
                         "M=0\n" +
                         "@END." + countLabel + "\n" +
-                        "0;JMP" +
+                        "0;JMP\n" +
                         "(END." + countLabel + ")\n");
                 countLabel++;
                 break;
@@ -180,7 +180,7 @@ public class CodeWriter {
                         "AM=M-1\n" +
                         "D=M\n" +
                         "A=A-1\n" +
-                        "M=D-M\n");
+                        "M=M-D\n");
                 break;
 
             case "neg":
@@ -189,7 +189,7 @@ public class CodeWriter {
                         "M=-M\n");
                 break;
 
-            case "end":
+            case "and":
                 bw.write("@SP\n" +
                         "AM=M-1\n" +
                         "D=M\n" +
@@ -209,7 +209,71 @@ public class CodeWriter {
                 bw.write("@SP\n" +
                         "A=M-1\n" +
                         "M=!M\n");
+
                 break;
+        }
+    }
+    public void popWriter(String arg1, String arg2) throws IOException {
+        if (segments.containsKey(arg1)){
+            bw.write("@"+segments.get(arg1)+"\n" +
+                    "D=M\n" +
+                    "@" + arg2 + "\n" +
+                    "D=D+A\n" +
+                    "@R14\n" +
+                    "M=D\n" +
+                    "@SP\n" +
+                    "AM=M-1\n" +
+                    "D=M\n" +
+                    "@R14\n" +
+                    "A=M\n" +
+                    "M=D\n");
+
+        }
+        else{
+            switch (arg1){
+
+                case "static":
+                    bw.write("@SP\n" +
+                            "AM=M-1\n" +
+                            "D=M\n" +
+                            "@" + fileName + "." + arg2 + "\n" +  //@FileName.i, example @Foo.5
+                            "M=D\n");
+                    break;
+
+                case "temp":
+                    bw.write("@5\n" +
+                            "D=A\n" +
+                            "@" + arg2 + "\n" +
+                            "D=D+A\n" +
+                            "@R14\n" +
+                            "M=D\n" +
+                            "@SP\n" +
+                            "AM=M-1\n" +
+                            "D=M\n" +
+                            "@R14\n" +
+                            "A=M\n" +
+                            "M=D\n");
+                    break;
+
+                case "pointer":
+                    if(Objects.equals(arg2, "0")){
+                        bw.write("@SP\n" +
+                                "AM=M-1\n" +
+                                "D=M\n" +
+                                "@THIS\n" +
+                                "M=D\n");
+                    }
+                    else{
+                        bw.write("@SP\n" +
+                                "AM=M-1\n" +
+                                "D=M\n" +
+                                "@THAT\n" +
+                                "M=D\n");
+                    }
+                    break;
+
+
+            }
         }
     }
 }
