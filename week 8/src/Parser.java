@@ -3,6 +3,9 @@ public class Parser {
     public static final int C_ARITHMETIC = 0;
     public static final int C_PUSH = 1;
     public static final int C_POP = 2;
+    public static final int C_LABEL = 3;
+    public static final int C_GOTO = 4;
+    public static final int C_IF = 5;
 
     public String lineTreatment(String line){
 
@@ -33,6 +36,12 @@ public class Parser {
                 return C_PUSH;
             case "pop":
                 return C_POP;
+            case "label":
+                return C_LABEL;
+            case "goto":
+                return C_GOTO;
+            case "if-goto":
+                return C_IF;
             default:
                 return C_ARITHMETIC;
         }

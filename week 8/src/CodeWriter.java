@@ -276,4 +276,30 @@ public class CodeWriter {
             }
         }
     }
+
+    public void writeLabel(String labelName) throws IOException {
+        bw.write("(" + labelName + ")\n");
+
+    }
+
+    public void writeGoto(String gotoLabel) throws IOException {
+        bw.write("@" + gotoLabel + "\n");
+        bw.write("0;JMP\n");
+    }
+
+    public void writeIfGoto(String gotoLabel) throws IOException {
+        bw.write("@SP\n");
+        bw.write("AM=M-1\n");
+        bw.write("D=M\n"); //D=*SP
+        bw.write("@" + gotoLabel + "\n");
+        bw.write("D;JNE\n"); //if D != 0, JUMP
+    }
+
+    public void init() throws IOException {
+        bw.write("@256\n");
+        bw.write("D=A\n");
+        bw.write("@SP\n");
+        bw.write("M=D\n");
+        //CALL Sys.init
+    }
 }
