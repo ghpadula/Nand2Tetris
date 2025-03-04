@@ -1,0 +1,3 @@
+push constant 22
+push constant 21
+sub
