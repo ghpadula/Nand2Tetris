@@ -6,12 +6,12 @@ public class Main {
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.out.println("Uso correto: java Main <arquivo_entrada>");
+            System.out.println("Usage: java Main <input-file>");
             return;
         }
 
-        String inputFile = args[0];  // Nome do arquivo de entrada
-        String outputFile = inputFile.replace(".vm", ".asm"); // Nome do arquivo de saíd
+        String inputFile = args[0]; //input file name
+        String outputFile = inputFile.replace(".vm", ".asm"); //output file name
 
         try (
                 BufferedReader brLabel = new BufferedReader(new FileReader(inputFile));
@@ -57,7 +57,7 @@ public class Main {
 
 
 
-            System.out.println("Arquivo copiado com sucesso de " + inputFile + " para " + outputFile);
+            System.out.println("File successfully copied from " + inputFile + " to " + outputFile);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

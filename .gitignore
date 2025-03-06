@@ -7,3 +7,6 @@ week 7/VMTranslator/.idea
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+.idea
+*/.idea
+week */week *.iml
