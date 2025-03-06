@@ -6,12 +6,12 @@ public class Main {
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.out.println("Uso correto: java Main <arquivo_entrada>");
+            System.out.println("Usage: java Main <input-file>");
             return;
         }
 
-        String inputFile = args[0];  // Nome do arquivo de entrada
-        String outputFile = inputFile.replace(".vm", ".asm"); // Nome do arquivo de saíd
+        String inputFile = args[0]; //input file name
+        String outputFile = inputFile.replace(".vm", ".asm"); //output file name
 
         try (
                 BufferedReader brLabel = new BufferedReader(new FileReader(inputFile));
@@ -19,7 +19,7 @@ public class Main {
         ) {
             String line;
             Parser p = new Parser();
-            CodeWriter c = new CodeWriter(bw);
+            CodeWriter c = new CodeWriter(bw,inputFile);
 
             while ((line = brLabel.readLine()) != null) {
                 line = p.lineTreatment(line);
@@ -29,24 +29,26 @@ public class Main {
                 bw.write("//" + line);
                 bw.newLine();
                 int comand = p.comandType(line);
+                String ariType;
                 String arg1;
                 String arg2;
 
                 if(comand == p.C_ARITHMETIC){
-                    bw.write("aritimetic");
-                    bw.newLine();
+                    ariType = p.ArithmeticType(line);
+                    c.arithmeticWriter(ariType);
 
                 }
                 else if(comand == p.C_PUSH){
                     arg1 = p.getArg1(line);
                     arg2 = p.getArg2(line);
-                    c.pushWriter(arg1,arg2,inputFile);
+                    c.pushWriter(arg1,arg2);
 
 
                 }
                 else{
-                    bw.write("pop");
-                    bw.newLine();
+                    arg1 = p.getArg1(line);
+                    arg2 = p.getArg2(line);
+                    c.popWriter(arg1,arg2);
 
 
                 }
@@ -55,7 +57,7 @@ public class Main {
 
 
 
-            System.out.println("Arquivo copiado com sucesso de " + inputFile + " para " + outputFile);
+            System.out.println("File successfully copied from " + inputFile + " to " + outputFile);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
