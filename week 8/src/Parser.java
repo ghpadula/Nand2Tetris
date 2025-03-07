@@ -7,7 +7,7 @@ public class Parser {
     public static final int C_GOTO = 4;
     public static final int C_IF = 5;
 
-    public String lineTreatment(String line){
+    public String lineHandling(String line){
 
         if(line.startsWith("//")){
             return null;
