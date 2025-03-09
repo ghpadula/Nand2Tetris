@@ -23,4 +23,16 @@ public class FileManager {
 
     }
 
+    public static String getDir(File input){
+        String dir = "";
+        if(input.isFile()){
+            dir = input.getParent() +"/Main.asm";
+        }
+        else if(input.isDirectory()){
+            dir = input.getAbsolutePath() + "/Main.asm";
+        }
+        
+        return dir;
+    }
+
 }

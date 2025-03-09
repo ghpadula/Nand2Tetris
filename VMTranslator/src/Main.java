@@ -5,19 +5,20 @@ public class Main {
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.out.println("Uso correto: java Main <arquivo_entrada>");
+            System.out.println("Usage: java Main <input-file>");
             return;
         }
 
-        File directory = new File(args[0]);
-        List<String> vmFiles = FileManager.returnVMFiles(directory);
-        String outputFile = directory +"/Main.asm";
+        File input = new File(args[0]);
+        List<String> vmFiles = FileManager.returnVMFiles(input);
+        String outputFile = FileManager.getDir(input);
 
 
         try(
                 BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))
         ){
-
+            CodeWriter c = new CodeWriter(bw,"");
+            c.init();
             for (String inputFile : vmFiles){
                 try (
                         BufferedReader brLabel = new BufferedReader(new FileReader(inputFile))
@@ -26,10 +27,10 @@ public class Main {
 
                     String line;
                     Parser p = new Parser();
-                    CodeWriter c = new CodeWriter(bw,inputFile);
+                    c.setFileName(inputFile);
 
                     while ((line = brLabel.readLine()) != null) {
-                        line = p.lineTreatment(line);
+                        line = p.lineHandling(line);
                         if (line == null){
                             continue;
                         }
@@ -72,7 +73,19 @@ public class Main {
                                 arg1 = p.getArg1(line);
                                 c.writeIfGoto(arg1);
                                 break;
-
+                            case Parser.C_CALL:
+                                arg1 = p.getArg1(line);
+                                arg2 = p.getArg2(line);
+                                c.writeCall(arg1,arg2);
+                                break;
+                            case Parser.C_FUNCTION:
+                                arg1 = p.getArg1(line);
+                                arg2 = p.getArg2(line);
+                                c.writeFunction(arg1,arg2);
+                                break;
+                            case Parser.C_RETURN:
+                                c.writeReturn();
+                                break;
 
                         }
 
