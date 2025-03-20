@@ -12,4 +12,5 @@ week 7/VMTranslator/.idea
 week */week *.iml
 week */*.iml
 week */*/*.class
+VMTranslator/*.iml
 

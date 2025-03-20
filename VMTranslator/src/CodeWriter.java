@@ -7,11 +7,17 @@ public class CodeWriter {
     private String fileName;
     private static Map<String, String> segments = new HashMap<>();
     private int countLabel = 0;
+    private int funcReturnCount = 0;
 
 
     public CodeWriter(BufferedWriter bw,String fileName) {
         this.bw = bw;
 
+
+        initializeSegments();
+    }
+
+    public void setFileName(String fileName) {
         if (fileName.contains("/")){
             String[] parts = fileName.split("/");
             int index = parts.length -1;
@@ -21,9 +27,8 @@ public class CodeWriter {
         else{
             this.fileName = fileName;
         }
-
-        initializeSegments();
     }
+
     private void initializeSegments() {
         segments.put("local", "LCL");
         segments.put("argument", "ARG");
@@ -78,12 +83,17 @@ public class CodeWriter {
 
             }
         }
+        finishPush();
+
+
+    }
+
+    public void finishPush() throws IOException {
         bw.write("@SP\n" + //writes the end of the push command to all segments,taking the value and putting it on top of the stack
                 "A=M\n" +
                 "M=D\n" +
                 "@SP\n" +
                 "M=M+1\n");
-
 
     }
 
@@ -300,6 +310,119 @@ public class CodeWriter {
         bw.write("D=A\n");
         bw.write("@SP\n");
         bw.write("M=D\n");
-        //CALL Sys.init
+        writeCall("Sys.init","0");
+    }
+
+    public void writeCall(String arg1,String arg2) throws IOException {
+        String funcName = arg1;
+        int nArgs = Integer.valueOf(arg2);
+
+        bw.write("@"+funcName + "$return." + funcReturnCount + "\n" +
+                "D=A\n");
+        finishPush();//SAVE RETURN ADRESS
+
+        bw.write("@LCL\n"+
+                "D=M\n");
+        finishPush(); //SAVE LCL IF THE CALLER
+
+        bw.write("@ARG\n"+
+                "D=M\n");
+        finishPush(); //SAVE ARG IF THE CALLER
+
+        bw.write("@THIS\n"+
+                "D=M\n");
+        finishPush(); //SAVE THIS IF THE CALLER
+
+        bw.write("@THAT\n"+
+                "D=M\n");
+        finishPush(); //SAVE THAT IF THE CALLER
+
+        bw.write("@SP\n"+
+                "D=M\n" +
+                "@" + (nArgs + 5) + "\n"+
+                "D=D-A\n"+
+                "@ARG\n"+
+                "M=D\n");//REPOSITIONS ARG
+
+        bw.write("@SP\n"+
+                "D=M\n" +
+                "@LCL\n" +
+                "M=D\n");//REPOSITIONS LCL
+
+        bw.write("@" + funcName + "\n" +
+                "0;JMP\n"); //TRANSFERS CONTROL TO THE CALLED FUNCION
+
+        bw.write("("+ funcName + "$return." + funcReturnCount + ")\n");
+         //RETURN LABEL
+
+        funcReturnCount++; //Increment return count
+    }
+
+    public void writeFunction(String arg1,String arg2) throws IOException {
+        String functionName = arg1;
+        int nVars = Integer.valueOf(arg2);
+
+        writeLabel(functionName);
+
+        for(int i = 0; i<nVars;i++){
+            bw.write("//push 0\n");
+            pushWriter("constant","0");
+        }
+    }
+
+    public void writeReturn() throws IOException {
+
+        bw.write("@LCL\n" +
+                "D=M\n" +
+                "@endFrame\n" +
+                "M=D\n"); //set endFrame = LCL
+
+        bw.write("@5\n" +
+                "A=D-A\n" +
+                "D=M\n" +
+                "@retADDR\n" +
+                "M=D\n");  //get the return address
+
+        popWriter("argument","0"); //repositions the return value for the caller
+
+        bw.write("@ARG\n" +
+                "D=M+1\n" +
+                "@SP\n" +
+                "M=D\n"); //repositions SP of the caller
+
+        bw.write("@endFrame\n" +
+                "A=M-1\n" +
+                "D=M\n" +
+                "@THAT\n" +
+                "M=D\n"); //Restores THAT of the caller
+
+        bw.write("@2\n" +
+                "D=A\n" +
+                "@endFrame\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@THIS\n" +
+                "M=D\n"); //Restores THIS of the caller
+
+        bw.write("@3\n" +
+                "D=A\n" +
+                "@endFrame\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@ARG\n" +
+                "M=D\n"); //Restores ARG of the caller
+
+        bw.write("@4\n" +
+                "D=A\n" +
+                "@endFrame\n" +
+                "A=M-D\n" +
+                "D=M\n" +
+                "@LCL\n" +
+                "M=D\n"); //Restores LCL of the caller
+
+        bw.write("@retADDR\n" +
+                "A=M\n" +
+                "0;JMP\n"); //goes to return address in the caller`s code
     }
 }
+

@@ -6,6 +6,9 @@ public class Parser {
     public static final int C_LABEL = 3;
     public static final int C_GOTO = 4;
     public static final int C_IF = 5;
+    public static final int C_CALL = 6;
+    public static final int C_FUNCTION = 7;
+    public static final int C_RETURN = 8;
 
     public String lineHandling(String line){
 
@@ -42,6 +45,12 @@ public class Parser {
                 return C_GOTO;
             case "if-goto":
                 return C_IF;
+            case "call":
+                return C_CALL;
+            case "function":
+                return C_FUNCTION;
+            case "return":
+                return C_RETURN;
             default:
                 return C_ARITHMETIC;
         }
